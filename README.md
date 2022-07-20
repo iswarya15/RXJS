@@ -13,7 +13,7 @@ At any point, data stream may emit any of the following three events:
 
 - Value : The next value in the stream.
 - Error : The stream has ended.
-- Complete : The error has stopped the stream.
+- Complete : The error has stopped the stream or data stream is over.
 
 ## Reactive Programming
 
@@ -21,7 +21,7 @@ The `Reactive Programming` is all about creating streams, emitting values, error
 
 ## Rxjs
 
-The `Rxjs (Reactive Extensions Library for Javascript` is a Javascript library, that allows us to work with Asynchronous data streams.
+The `Rxjs (Reactive Extensions Library for Javascript)` is a Javascript library, that allows us to work with Asynchronous data streams.
 
 ## Rxjs in Angular
 
@@ -61,7 +61,7 @@ There are _easier_ ways to create Observables using **Rxjs Operators**.
 ### Subscribing to Observables
 
 The `Observers` communicate with the `Observable` using `callbacks`. While _subscribing_ to the `Observable`, it passes
-three **optional** callbacks.
+three **optional** callbacks. We can pass these callbacks within an Object as an argument for `subscribe()` method. If we are expecting only the `value` emitted by the `Observable`, then it can be passed without the Object syntax.
 
 Check `app.component.ts` for implementation of `subscribing` to `Observables`.
 
@@ -75,7 +75,7 @@ operator. It modifies it and creates new Observable, which becomes the input for
 
 The following table lists some of the commonly used Operators.
 
-| Area           | Operators                                                                                                                                   |
+| Operation      | Operators                                                                                                                                   |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | Combination    | combineLatest, concat, merge, startWith , withLatestFrom, zip                                                                               |
 | Filtering      | debounceTime, distinctUntilChanged, filter, take, takeUntil, takeWhile, takeLast, first, last, single, skip, skipUntil, skipWhile, skipLast |
@@ -83,3 +83,33 @@ The following table lists some of the commonly used Operators.
 | Utility        | tap, delay, delaywhen                                                                                                                       |
 | Error Handling | throwerror, catcherror, retry, retrywhen                                                                                                    |
 | Multicasting   | share                                                                                                                                       |
+
+## Creation Operators
+
+- `Observable.create()` -> Calls the Observable `Constructor` behind the scenes. Create is a method of the Observable object, hence
+  don't have to import it. This method is _deprecated_. Use constructor instead.
+
+- `of` creates an Observable from the `arguments` we pass into it. We can pass _any number of arguments_ to the `Of`. Each argument is emitted _one after the other_. It sends the `complete` signal in the end.
+
+- `from` operates creates takes only `one argument` that can be iterated and converted into an `Observable`. Sends `complete` signal in the end.
+
+Example Array: from([a,b,c]) => a->b->c->complete
+Example String: from('Hello') => 'h'->'e'->'l'->'l'->'o' -> complete.
+
+- `Observables from collections` : **Anything** that can be `iterated` can be converted into an `Observable` using `from` operator.
+
+## Observables from Event
+
+- `FromEvent` method allows us to create an **Observable** from `DOM events` directly.
+
+- `Arguments` : _EventTargetElement_: First, _EventName_: Second
+
+Syntax :
+
+```
+fromEvent(this.button.nativeElement, 'click').subscribe({next: () => {}, complete: () => {}})
+```
+
+### How it works?
+
+When we `subscribe` to an `observable`, which we created using the `fromEvent` method, it _registers_ the **event handler** using the `addEventListener` in the DOM element
