@@ -5,12 +5,38 @@
   <em>Programming with asynchronous data streams</em>.
 </p>
 
-<button #obsButton mat-raised-button color="primary">Trigger Observable</button>
-<button
-  style="margin-left: 40px"
-  #debounceButton
-  mat-raised-button
-  color="primary"
->
-  Debounce Observable
-</button>
+<div style="display: flex; width: 100%; flex-wrap: wrap">
+  <button #obsButton mat-raised-button color="primary">
+    Stream Click Events using fromEvent
+  </button>
+
+  <button (click)="creationOperators()" mat-raised-button color="primary">
+    Trigger Observables using Creation Operators
+  </button>
+  <button #debounceButton mat-raised-button color="primary">
+    Debounce Click Events
+  </button>
+
+  <button
+    (click)="pipeOperatorsUsingFilterMap()"
+    mat-raised-button
+    color="primary"
+  >
+    Filter and map
+  </button>
+  <button (click)="tapObservables()" mat-raised-button color="primary">
+    Tap Observables
+  </button>
+
+  <button (click)="reusablePipe()" mat-raised-button color="primary">
+    Re-usable Pipes
+  </button>
+
+  <button (click)="mapOperator()" mat-raised-button color="primary">
+    Map Operator
+  </button>
+  <button (click)="toUpperCaseUsingMap()" mat-raised-button color="primary">
+    Convert Input to UpperCase
+  </button>
+  <button mat-raised-button color="primary">Filter Operator</button>
+</div>

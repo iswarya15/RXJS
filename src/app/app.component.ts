@@ -14,6 +14,11 @@ import {
   fromEvent,
   Subscription,
   debounceTime,
+  filter,
+  map,
+  Observer,
+  tap,
+  pipe,
 } from 'rxjs';
 import { MatButton } from '@angular/material/button';
 
@@ -29,6 +34,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   // this.obsButton._elementRef.nativeElement => returns the MatButton : Pass this as first argument to the fromEvent method
   @ViewChild('obsButton', { static: true }) obsButton!: MatButton;
   buttonSubscription!: Subscription;
+
+  customPipeForOfOperator!: Subscription;
 
   @ViewChild('debounceButton') deBounceBtn!: MatButton;
 
@@ -60,8 +67,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       error: (error) => console.log('HTTP Error => ', error),
       complete: () => console.log('HTTP Request Complete'),
     });
-
-    this.creationOperators();
   }
 
   ngAfterViewInit(): void {
@@ -73,8 +78,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   creationOperators() {
     // Using constructor
-    const obsUsingConstructor: Observable<any> = new Observable(
-      (subscriber: any) => {
+    const obsUsingConstructor: Observable<number> = new Observable(
+      (subscriber: Observer<number>) => {
         subscriber.next(1);
         subscriber.next(2);
         subscriber.complete();
@@ -177,8 +182,119 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  pipeOperatorsUsingFilterMap() {
+    const observable: Observable<number> = new Observable(
+      (subscriber: Observer<number>) => {
+        subscriber.next(1),
+          subscriber.next(2),
+          subscriber.next(3),
+          subscriber.next(4),
+          subscriber.next(5),
+          subscriber.complete();
+      }
+    ).pipe(
+      filter((data) => {
+        console.log('Data at Filter => ', data); //1 2 3 4 5
+        return data > 2;
+      }),
+      map((val) => val * 2)
+    );
+    observable.subscribe({
+      next: (val) => console.log('Received from Operators in Pipe ', val),
+      complete: () =>
+        console.log('Stream of values greater than 2 using Pipe completed'),
+    });
+  }
+
+  tapObservables() {
+    const observable: Observable<number> = new Observable(
+      (subscriber: Observer<number>) => {
+        subscriber.next(1),
+          subscriber.next(2),
+          subscriber.next(3),
+          subscriber.next(4),
+          subscriber.next(5),
+          subscriber.complete();
+      }
+    ).pipe(
+      tap((data) => console.log('Tap data => ', data)),
+      filter((data) => {
+        console.log('Data at Filter => ', data); //1 2 3 4 5
+        return data > 2;
+      }),
+      map((val) => val * 2),
+      tap((data) => console.log('Tap data after mapping =>', data))
+    );
+    observable.subscribe({
+      next: (val) => console.log('Received from Operators in Pipe ', val),
+      complete: () =>
+        console.log(
+          'Stream of values by tapping and mapping using Pipe completed'
+        ),
+    });
+  }
+
+  reusablePipe() {
+    const customOperator = pipe(
+      tap((data: any) => console.log('tap ' + data)),
+      filter((data) => data > 2),
+      tap((data) => console.log('filter ' + data)),
+      map((val) => {
+        return val * 2;
+      }),
+      tap((data) => console.log('final tap ' + data))
+    );
+
+    const observable: Observable<number> = new Observable(
+      (subscriber: Observer<number>) => {
+        subscriber.next(1),
+          subscriber.next(3),
+          subscriber.next(4),
+          subscriber.complete();
+      }
+    );
+
+    observable.pipe(customOperator).subscribe({
+      next: (data) =>
+        console.log('Subscribing to Values received from CustomPipe => ', data),
+      complete: () => console.log('Stream completed from customPipe'),
+    });
+
+    this.customPipeForOfOperator = of(1, 5, 6, 7)
+      .pipe(customOperator)
+      .subscribe((val) =>
+        console.log(
+          'of Operator Values received from CustomPipe method => ',
+          val
+        )
+      );
+  }
+
+  mapOperator() {
+    const srcArray: Observable<number> = from([1, 2, 3, 4]);
+
+    srcArray.pipe(map((val) => val * 3)).subscribe({
+      next: (val) => console.log('Value from Map operator =>', val),
+      complete: () => console.log('Stream completed through map Operator'),
+    });
+    console.log('Use index param for map()');
+    srcArray.pipe(map((val, index) => val * index)).subscribe({
+      next: (val) => console.log('Map operator using index => ', val),
+      complete: () => console.log('Stream completed through Map Operator'),
+    });
+  }
+
+  toUpperCaseUsingMap() {
+    const input: Observable<string> = from(['Jin Yang', 'Richard', 'Gilfoyle']);
+
+    input
+      .pipe(map((name) => name.toUpperCase()))
+      .subscribe((name) => console.log('Converted name to Uppercase: ', name));
+  }
+
   ngOnDestroy() {
     // When we unsubscribe, it un-registers the event handler from the DOM element.
     this.buttonSubscription.unsubscribe();
+    this.customPipeForOfOperator.unsubscribe();
   }
 }

@@ -113,3 +113,43 @@ fromEvent(this.button.nativeElement, 'click').subscribe({next: () => {}, complet
 ### How it works?
 
 When we `subscribe` to an `observable`, which we created using the `fromEvent` method, it _registers_ the **event handler** using the `addEventListener` in the DOM element
+
+## Pipe method
+
+`Pipe` method of Angular Observable is used to _chain multiple operators_ together. `Rxjs Operators` are functions that take Observables as Input and `transform` it into a new `Observable` and return it.
+
+Each argument of the `pipe` method must be separated by a `comma`. The _order of operators_ is important because when a user subscribes to an Observable, the pipe executes in the order in which they are added.
+
+There are **2** ways, we can use the pipe. One as an `instance` of `Observable` and the other way is to use it as a `standalone` method.
+
+### Pipe as an instance method
+
+We chain the operators op1, op2 etc that are passed as argument to the `pipe` method. The output of op1 becomes the Input of op2.
+
+```
+obs.pipe(
+  op1(),
+  op2(),
+  op3(),
+)
+```
+
+**Note**: If we are emitting _multiple values_ through `operators` in the `pipe chain`, each observable would go through the _entire chain_ and will be delivered to the subscriber, only then the next one will be streamed.
+
+Refer `pipeOperatorsUsingFilterMap()` method.
+
+### Pipe as standalone method
+
+We can also use pipe as a standalone function and `re-use` the **pipe at other places**. We need to import _pipe_ from rxjs. Check `reusablePipe` method for custom pipe creation.
+
+## tap Operator
+
+`tap` : The tap operator returns a new Observable which is the _mirror copy_ of the source `observable`. Mostly used for _debugging purpose_.
+
+Example: _Logging_ the values of Observables. Refer `tapObservables()` method
+
+## map Operator
+
+`map` : can be used with HTTP Request, with DOM Events, filtering the input data etc..
+
+- `Arguments` map(value : _emitted_ by the observable ,index: _0 for the first value emitted_ and _incremented by one_ for every subsequent value)
