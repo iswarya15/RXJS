@@ -1,22 +1,48 @@
 <h1>RXJS</h1>
 
 <p>
-  `Rx` stands for <em> Reactive Programming</em> which refers to
-  <em>Programming with asynchronous data streams</em>.
+  `Rx` stands for Reactive Programming which refers to Programming with
+  asynchronous data streams.
 </p>
 
+<h2>CREATION OPERATORS</h2>
+<button (click)="creationOperators()" mat-raised-button color="primary">
+  Trigger Observables using Creation Operators
+</button>
+
+<h2>EVENT LISTENER</h2>
 <div style="display: flex; width: 100%; flex-wrap: wrap">
   <button #obsButton mat-raised-button color="primary">
     Stream Click Events using fromEvent
   </button>
 
-  <button (click)="creationOperators()" mat-raised-button color="primary">
-    Trigger Observables using Creation Operators
-  </button>
   <button #debounceButton mat-raised-button color="primary">
     Debounce Click Events
   </button>
+</div>
 
+<h2>MAP OPERATOR</h2>
+<div style="display: flex; width: 100%; flex-wrap: wrap">
+  <button (click)="mapOperator()" mat-raised-button color="primary">
+    Map Operator
+  </button>
+  <button (click)="toUpperCaseUsingMap()" mat-raised-button color="primary">
+    Convert Input to UpperCase
+  </button>
+
+  <button (click)="mapFirstandLastName()" mat-raised-button color="primary">
+    Map First and Last name
+  </button>
+  <button (click)="mapHttpRequest()" mat-raised-button color="primary">
+    Map HTTP Request
+  </button>
+  <button (click)="multipleMaps()" mat-raised-button color="primary">
+    Use Multiple Maps
+  </button>
+</div>
+
+<h2>PIPE OPERATOR</h2>
+<div style="display: flex; width: 100%; flex-wrap: wrap">
   <button
     (click)="pipeOperatorsUsingFilterMap()"
     mat-raised-button
@@ -24,19 +50,28 @@
   >
     Filter and map
   </button>
+  <button (click)="reusablePipe()" mat-raised-button color="primary">
+    Re-usable Pipes
+  </button>
+</div>
+
+<h2>TAP & FILTER OPERATOR</h2>
+<div style="display: flex; width: 100%; flex-wrap: wrap">
   <button (click)="tapObservables()" mat-raised-button color="primary">
     Tap Observables
   </button>
 
-  <button (click)="reusablePipe()" mat-raised-button color="primary">
-    Re-usable Pipes
+  <button (click)="filterOperator()" mat-raised-button color="primary">
+    Filter Numbers
   </button>
+</div>
 
-  <button (click)="mapOperator()" mat-raised-button color="primary">
-    Map Operator
+<h2>TRANSFORMATION OPERATORS</h2>
+<div style="display: flex; width: 100%; flex-wrap: wrap">
+  <button (click)="switchMapOperator()" mat-raised-button color="primary">
+    SwitchMap Operator
   </button>
-  <button (click)="toUpperCaseUsingMap()" mat-raised-button color="primary">
-    Convert Input to UpperCase
+  <button #switchMapClick mat-raised-button color="primary">
+    SwitchMap for Click Event
   </button>
-  <button mat-raised-button color="primary">Filter Operator</button>
 </div>

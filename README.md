@@ -144,7 +144,7 @@ We can also use pipe as a standalone function and `re-use` the **pipe at other p
 
 ## tap Operator
 
-`tap` : The tap operator returns a new Observable which is the _mirror copy_ of the source `observable`. Mostly used for _debugging purpose_.
+`tap` : The tap operator returns a new Observable which is the _mirror copy_ of the source `observable`. Mostly used for _debugging purpose_. It does not modify the stream in any way.
 
 Example: _Logging_ the values of Observables. Refer `tapObservables()` method
 
@@ -152,4 +152,54 @@ Example: _Logging_ the values of Observables. Refer `tapObservables()` method
 
 `map` : can be used with HTTP Request, with DOM Events, filtering the input data etc..
 
-- `Arguments` map(value : _emitted_ by the observable ,index: _0 for the first value emitted_ and _incremented by one_ for every subsequent value)
+- `Arguments` map(value : _emitted_ by the observable ,index: _0 for the first value emitted_ and _incremented by one_ for every subsequent value) optional.
+
+**Note** : `keyValue` _pipe_ from `@angular/common` can _transform an Object to Array of key-value pairs_
+
+```
+const obj = {person1: 'jon',person2: 'hopper',person3: 'mona'}
+const transformObj = this.keyValuePipe.transform(obj);
+```
+
+Result :
+[
+{
+"key": "person1",
+"value": "jon"
+},
+{
+"key": "person2",
+"value": "hopper"
+},
+{
+"key": "person3",
+"value": "mona"
+}
+]
+
+- We can also use `multiple maps` within same `pipe`.
+
+## Filter operator
+
+-Most widely used operator which can filter items emitted based on a condition.
+
+## Transformational Operator
+
+## SwitchMap Operator
+
+`SwitchMap` operator `maps` each value from the `source observable` to an `inner observable`. The _source observable subscribes_ to the `inner observable` and emits value from it.
+
+`SwitchMap` function must return an **Observable**
+
+### Map vs SwitchMap
+
+`map` _emits values_ as `Observables`, `switchMap` _subscribes to an Inner Observable_ and emits values from it.
+
+```
+someStream$.pipe(
+    switchMap(args => makeApiCall(args)), // must return a stream
+    map(response => process(response)) // returns a value of any shape, usually an object or a primitive
+).subscribe(doSomethingWithResults);
+```
+
+`SwitchMap` cancels any _previous Observable stream_.

@@ -19,8 +19,11 @@ import {
   Observer,
   tap,
   pipe,
+  switchMap,
+  interval,
 } from 'rxjs';
 import { MatButton } from '@angular/material/button';
+import { KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -34,12 +37,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   // this.obsButton._elementRef.nativeElement => returns the MatButton : Pass this as first argument to the fromEvent method
   @ViewChild('obsButton', { static: true }) obsButton!: MatButton;
   buttonSubscription!: Subscription;
-
+  @ViewChild('switchMapClick', { static: true }) switchMapBtn!: MatButton;
   customPipeForOfOperator!: Subscription;
 
   @ViewChild('debounceButton') deBounceBtn!: MatButton;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private keyValuePipe: KeyValuePipe) {}
 
   ngOnInit(): void {
     // Callback function inside Observable constructor is executed when this Observable's subscribe method is called.
@@ -74,6 +77,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.buttonClick();
     this.debounceBtnClick();
     this.scroll();
+    this.switchMapforClick();
   }
 
   creationOperators() {
@@ -290,6 +294,89 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     input
       .pipe(map((name) => name.toUpperCase()))
       .subscribe((name) => console.log('Converted name to Uppercase: ', name));
+  }
+
+  mapFirstandLastName() {
+    const name: Observable<object> = of({
+      fname: 'steve',
+      lname: 'Harrington',
+    });
+
+    name
+      .pipe(map((person: any) => person.fname + ' ' + person.lname))
+      .subscribe((name) => console.log('Person name mapped : ', name));
+  }
+
+  $getDogsList() {
+    return this.http.get<any>('https://dog.ceo/api/breeds/list/all');
+  }
+
+  mapHttpRequest() {
+    this.$getDogsList()
+      .pipe(
+        map((data: any) => {
+          var dogs = this.keyValuePipe.transform(data.message);
+          console.log(dogs);
+        })
+      )
+      .subscribe();
+
+    const obj = { person1: 'jon', person2: 'hopper', person3: 'mona' };
+    const transformObj = this.keyValuePipe.transform(obj);
+    console.log(transformObj);
+  }
+
+  multipleMaps() {
+    const obs: Observable<number> = from([1, 2, 3]);
+    obs
+      .pipe(
+        map((val) => val + 10),
+        map((val) => val * 2)
+      )
+      .subscribe((data) => console.log('Using 2 Map Operators ', data));
+  }
+
+  filterOperator() {
+    from([1, 2, 3, 4, 5, 6, 7])
+      .pipe(
+        filter((num) => num % 2 == 0),
+        tap((num) => {
+          console.log('Tap num => ', num);
+          return num * 10; // does not modify the stream
+        })
+      )
+      .subscribe({
+        next: (val) => console.log('Filter Even numbers => ', val),
+        complete: () => console.log('Filtering completed'),
+      });
+  }
+  switchMapOperator() {
+    let sourceObservable: Observable<number> = of(1, 2, 3);
+    let innerObservable: Observable<string> = of('a', 'b', 'c');
+
+    sourceObservable
+      .pipe(
+        switchMap((val) => {
+          console.log('Source Observable => ', val);
+          console.log('Subscribing to Inner Observable!!');
+          return innerObservable;
+        })
+      )
+      .subscribe((value) => console.log('Inner Obs => ', value));
+  }
+
+  switchMapforClick() {
+    console.log(
+      '[switchMapforClick] method invoked to attach the event listener'
+    );
+    const clickCounter: Observable<number> = fromEvent(
+      this.switchMapBtn._elementRef.nativeElement,
+      'click'
+    ).pipe(switchMap(() => interval(1000)));
+    // Cancels any counter started for previous clicks!
+    const clickCounterSubscription: Subscription = clickCounter.subscribe(
+      (val) => console.log('Click Counter => ', val)
+    );
   }
 
   ngOnDestroy() {
