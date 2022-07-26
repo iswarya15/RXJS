@@ -15,6 +15,9 @@ import {
   of,
   mergeMap,
   delay,
+  take,
+  timer,
+  takeUntil,
 } from 'rxjs';
 
 @Component({
@@ -27,6 +30,7 @@ export class TransformComponent implements OnInit, AfterViewInit {
   switchMapBtn!: MatButton;
 
   @ViewChild('clickLocation', { static: true }) clickLocation!: MatButton;
+  @ViewChild('firstClick', { static: true }) firstClick!: MatButton;
 
   constructor() {}
 
@@ -35,12 +39,8 @@ export class TransformComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.switchMapforClick();
     this.saveClickLocations();
+    this.firstClickLocation();
   }
-
-  saveLocation = (location: Object): Observable<Object> => {
-    // returns Observable object after 0.5s
-    return of(location).pipe(delay(500));
-  };
 
   switchMapforClick() {
     console.log(
@@ -71,6 +71,11 @@ export class TransformComponent implements OnInit, AfterViewInit {
       .subscribe((value) => console.log('Inner Obs => ', value));
   }
 
+  saveLocation = (location: Object): Observable<Object> => {
+    // returns Observable object after 0.5s
+    return of(location).pipe(delay(500));
+  };
+
   saveClickLocations() {
     console.log(
       '[saveClickLocations] method invoked to attach click event listener'
@@ -94,5 +99,54 @@ export class TransformComponent implements OnInit, AfterViewInit {
       .subscribe((val: Object) => {
         console.log('Location saved!!! => ', val);
       });
+  }
+
+  takeOneValue() {
+    const obs: Observable<number> = of(1, 2, 3, 4, 5, 6);
+
+    obs.pipe(take(2)).subscribe({
+      next: (val) => console.log('Value Emitted by Take => ', val),
+      complete: () => console.log('Source Emission Complete'),
+    });
+  }
+
+  filterInterval() {
+    const obs: Observable<number> = interval(1000);
+
+    obs
+      .pipe(take(5))
+      .subscribe((val) => console.log('Value Emitted by Interval =>', val));
+  }
+
+  firstClickLocation() {
+    const firstClick = fromEvent(
+      this.firstClick._elementRef.nativeElement,
+      'click'
+    );
+
+    firstClick
+      .pipe(
+        switchMap((event: any) => {
+          return this.saveLocation({
+            x: event.clientX,
+            y: event.clientY,
+          });
+        }),
+        take(1) //placing the take operator above switchMap doesn't filter any emission from switchMap. Hence place it after switchMap
+      )
+      .subscribe((val) => console.log('First Click Location', val));
+  }
+
+  takeUntilTimer() {
+    const obs$: Observable<number> = interval(1000); // Values after 4s aren't emitted since takeUntil emits a value at 5th second
+    // Timer$ emits 0 at 5s and completes since it doesn't have any second param
+    const timer$: Observable<number> = timer(5000);
+
+    const timerSubs: Observable<number> = obs$.pipe(takeUntil(timer$)); //takes until timer$ emits a value. timer$ is the notifiable observable
+
+    timerSubs.subscribe({
+      next: (val) => console.log('TakeUntil timer emits => ', val),
+      complete: () => console.log('Stopped by TakeUntil Timer'),
+    });
   }
 }

@@ -1,4 +1,6 @@
 <h2>TRANSFORMATION OPERATORS</h2>
+<!-- No click event is needed for some elements since we attach the fromEvent Event Listener to this button -->
+
 <div style="display: flex; width: 100%; flex-wrap: wrap">
   <button (click)="switchMapOperator()" mat-raised-button color="primary">
     SwitchMap Operator
@@ -11,5 +13,22 @@
   </button>
   <button #clickLocation mat-raised-button color="primary">
     Track Click Locations using MergeMap
+  </button>
+</div>
+
+<h2>Take Operator</h2>
+<div style="display: flex; width: 100%; flex-wrap: wrap">
+  <button (click)="takeOneValue()" mat-raised-button color="primary">
+    Take n value
+  </button>
+  <button (click)="filterInterval()" mat-raised-button color="primary">
+    Filter n from Interval
+  </button>
+  <button #firstClick mat-raised-button color="primary">
+    Where did you click first?
+  </button>
+
+  <button (click)="takeUntilTimer()" mat-raised-button color="primary">
+    TakeUntil Timer
   </button>
 </div>

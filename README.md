@@ -211,6 +211,39 @@ The main difference between _switchMap and other flattening operators_ is the **
 This operator is best used when you wish to `flatten` an `inner observable` but want to _manually control the number of inner subscriptions_.
 
 In contrast to `SwitchMap`, mergeMap **allows for multiple inner subscriptions** to be active at a time.
-If the order of emission and subscription of inner observables is important, try `concatMap`.
+If the order of emission and subscription of inner observables is important, try `concatMap`. `SwitchMap` never cancels inner Observable.
 
 `Memory Leaks` : Using `mergeMap` operator can often lead to memory leaks since it allows multiple inner subscriptions, so make sure to use Operators like `take`, `takeUntil`
+
+## Filtering Operators
+
+## take Operator
+
+Why use `take`?
+
+- When you are interested in only the `first emission`, you want to use take. Maybe you want to _see what the user first clicked on when they entered the page_, or you would want to _subscribe to the click event and just take the first emission_.
+
+* Another use-case is when you need to _take a snapshot of data at a particular point in time but do not require further emissions_. For example, a stream of user token updates, or a route guard based on a stream in an Angular application.
+
+  💡 If you want to **take a number of values based on some logic**, or another observable, you can use **takeUntil** or **takeWhile**!
+  💡 `take` is the _opposite_ of `skip` where take will _take the first n number of emissions while skip will skip the first n number of emissions_.
+
+```
+ obs.pipe(take(2)).subscribe()
+```
+
+## TakeUntil Operator
+
+The `takeUntil` operator returns an `Observable` that emits value from the `source Observable` until _the `notifier Observable` emits a value_.
+
+```
+TakeUntil(notifier: Observable): Observable
+```
+
+We must pass a **notifier observable** as the `argument` to the `TakeUntil Operator`.
+
+- TakeUntil emits the values from the Source Observable as long as it does not receive any value from the notifier observable.
+
+- When the notifier emits a value, the TakeUntil completes the Source observable.
+
+Check sample code in `transform.component.ts`
