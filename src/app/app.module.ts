@@ -7,9 +7,11 @@ import { AppComponent } from './app.component';
 import { KeyValuePipe } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
-
+import { TransformComponent } from './transform/transform.component';
+import { ProductsComponent } from './products/products.component';
+import { ProductsService } from './products/products.service';
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, TransformComponent, ProductsComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -17,7 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
     BrowserAnimationsModule,
     MatButtonModule,
   ],
-  providers: [KeyValuePipe],
+  providers: [KeyValuePipe, ProductsService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

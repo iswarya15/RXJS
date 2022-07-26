@@ -1,0 +1,15 @@
+p {
+  font-weight: 500;
+}
+
+button {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 10px;
+}
+
+h2 {
+  margin-bottom: 0px;
+  font-family: 'Raleway', sans-serif;
+  margin-top: 5px;
+}

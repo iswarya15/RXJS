@@ -202,4 +202,15 @@ someStream$.pipe(
 ).subscribe(doSomethingWithResults);
 ```
 
-`SwitchMap` cancels any _previous Observable stream_.
+`Example use case`: This works perfectly for scenarios like form Input/search Input where you are _no longer concerned with the response of the previous request when a new input arrives_.
+
+The main difference between _switchMap and other flattening operators_ is the **cancelling effect**. On each emission the previous inner observable (the result of the function you supplied) is cancelled and the new observable is subscribed. You can remember this by the phrase **switch to a new observable**.
+
+## MergeMap Operator
+
+This operator is best used when you wish to `flatten` an `inner observable` but want to _manually control the number of inner subscriptions_.
+
+In contrast to `SwitchMap`, mergeMap **allows for multiple inner subscriptions** to be active at a time.
+If the order of emission and subscription of inner observables is important, try `concatMap`.
+
+`Memory Leaks` : Using `mergeMap` operator can often lead to memory leaks since it allows multiple inner subscriptions, so make sure to use Operators like `take`, `takeUntil`

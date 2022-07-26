@@ -77,7 +77,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.buttonClick();
     this.debounceBtnClick();
     this.scroll();
-    this.switchMapforClick();
   }
 
   creationOperators() {
@@ -349,34 +348,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         next: (val) => console.log('Filter Even numbers => ', val),
         complete: () => console.log('Filtering completed'),
       });
-  }
-  switchMapOperator() {
-    let sourceObservable: Observable<number> = of(1, 2, 3);
-    let innerObservable: Observable<string> = of('a', 'b', 'c');
-
-    sourceObservable
-      .pipe(
-        switchMap((val) => {
-          console.log('Source Observable => ', val);
-          console.log('Subscribing to Inner Observable!!');
-          return innerObservable;
-        })
-      )
-      .subscribe((value) => console.log('Inner Obs => ', value));
-  }
-
-  switchMapforClick() {
-    console.log(
-      '[switchMapforClick] method invoked to attach the event listener'
-    );
-    const clickCounter: Observable<number> = fromEvent(
-      this.switchMapBtn._elementRef.nativeElement,
-      'click'
-    ).pipe(switchMap(() => interval(1000)));
-    // Cancels any counter started for previous clicks!
-    const clickCounterSubscription: Subscription = clickCounter.subscribe(
-      (val) => console.log('Click Counter => ', val)
-    );
   }
 
   ngOnDestroy() {

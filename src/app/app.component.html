@@ -66,12 +66,6 @@
   </button>
 </div>
 
-<h2>TRANSFORMATION OPERATORS</h2>
-<div style="display: flex; width: 100%; flex-wrap: wrap">
-  <button (click)="switchMapOperator()" mat-raised-button color="primary">
-    SwitchMap Operator
-  </button>
-  <button #switchMapClick mat-raised-button color="primary">
-    SwitchMap for Click Event
-  </button>
-</div>
+<app-transform></app-transform>
+
+<router-outlet></router-outlet>
