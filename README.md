@@ -247,3 +247,28 @@ We must pass a **notifier observable** as the `argument` to the `TakeUntil Opera
 - When the notifier emits a value, the TakeUntil completes the Source observable.
 
 Check sample code in `transform.component.ts`
+
+## TakeWhile vs Filter
+
+`TakeWhile` operator will keep emitting the value from the source observable until they pass the given condition (predicate). When it receives a value that _does not satisfy the condition_ it _completes the observable_.
+
+The difference is that takeWhile _discards the rest of the stream, when it receives the first value that does not satisfy the condition_. The filter operator **never stops the observable**.
+
+## TakeLast
+
+`TakeLast` operator emits the `last n number of values` from the source observable.
+
+## First / Last
+
+`first/last` operator _emits the first/last matching value if the condition is present_.If there is no condition present, it emits th first/last value it receives.
+
+`Error` _notification_ is sent if no value is emitted from `source`.
+
+## Skip Operators
+
+The skip operators **skips the values** from the source observable based on a `condition`. The `Skip`, `SkipUntil`, `SkipWhile` skips the values from the _start of the source_. The `SkipLast` Operator skips elements from the _end of the source_.
+
+### Filter vs SkipWhile
+
+- `Filter` emits the value if the predicate(condn) is true
+- `SkipWhile` skips the value if the predicate(condn) is true

@@ -18,6 +18,15 @@ import {
   take,
   timer,
   takeUntil,
+  takeWhile,
+  filter,
+  range,
+  takeLast,
+  first,
+  skip,
+  skipWhile,
+  skipUntil,
+  skipLast,
 } from 'rxjs';
 
 @Component({
@@ -148,5 +157,94 @@ export class TransformComponent implements OnInit, AfterViewInit {
       next: (val) => console.log('TakeUntil timer emits => ', val),
       complete: () => console.log('Stopped by TakeUntil Timer'),
     });
+  }
+
+  takeWhile() {
+    const obs$: Observable<number> = of(1, 2, 3, 5, 1, 4, 3, 6, 3, 1); //values after first 3 is not emitted
+    obs$.pipe(takeWhile((val) => val != 3)).subscribe({
+      next: (val) => console.log('Value passing takeWhile condition =>', val),
+      complete: () => console.log('TakeWhile discards rest of the stream'),
+    });
+  }
+
+  takeWhileVsFilter() {
+    const obs$: Observable<number> = of(1, 2, 3, 5, 1, 4, 3, 6, 3, 1); //values after 3 is still emitted
+    obs$.pipe(filter((val) => val != 3)).subscribe({
+      next: (val) => console.log('Value passing filter condition =>', val),
+      complete: () => console.log('Filter does not discard the stream'),
+    });
+  }
+
+  takeLastNValues() {
+    const values$: Observable<number> = range(1, 100);
+
+    values$
+      .pipe(takeLast(5))
+      .subscribe((val) => console.log('Last 5 values using takeLast =>', val));
+  }
+
+  firstValue() {
+    const obs$: Observable<number> = of(1, 2, 3, 4, 5, 6).pipe(first());
+    obs$.subscribe((val) => console.log('First value with no Condn =>', val));
+  }
+
+  firstValueWithCond() {
+    const obs$: Observable<number> = of(1, 2, 4, 5, 6, 3).pipe(
+      first((val) => val > 2)
+    );
+
+    obs$.subscribe((val) =>
+      console.log('First value that matches condn =>', val)
+    );
+  }
+
+  noValueMatchCondn() {
+    const obs$: Observable<any> = of(1, 2, 3, 5).pipe(first((val) => val > 10));
+
+    obs$.subscribe({
+      next: (val) => console.log('Value that matches no condn', val),
+      error: (err) => console.log('No values matched condn =>', err),
+    });
+  }
+
+  defaultValue() {
+    const obs$: Observable<any> = of(1, 2, 3, 5).pipe(
+      first((val) => val > 10, 100)
+    );
+
+    obs$.subscribe({
+      next: (val) => console.log('Default Value => ', val),
+      error: (err) => console.log('No values matched condn =>', err),
+    });
+  }
+
+  skipNValues() {
+    const obs$: Observable<number> = of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).pipe(
+      skip(5)
+    );
+    obs$.subscribe((val) => console.log('After Skipping n values =>', val));
+  }
+
+  skipWhileValues() {
+    const obs$: Observable<number> = of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).pipe(
+      skipWhile((val) => val < 5)
+    );
+    // Skips values if condn is met
+    obs$.subscribe((val) => console.log('SkipWhile when vales < 5 => ', val));
+  }
+
+  skipUntilTimer() {
+    const obs$: Observable<number> = interval(1000).pipe(
+      skipUntil(timer(6000))
+    );
+    // Unlike takeUntil, skipUntil does not emit value till the notifier observable emits a value
+    obs$.subscribe((val) =>
+      console.log('Skip Values till Timer(6000s) emits => ', val)
+    );
+  }
+  skipLastNValues() {
+    const obs$: Observable<number> = range(1, 100).pipe(skipLast(90));
+    // SkipLast delays the value. Use tap to check
+    obs$.subscribe((val) => console.log('Skip Last N Values => ', val));
   }
 }

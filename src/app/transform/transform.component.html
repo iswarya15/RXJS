@@ -16,7 +16,7 @@
   </button>
 </div>
 
-<h2>Take Operator</h2>
+<h2>Filter Using Take Operator</h2>
 <div style="display: flex; width: 100%; flex-wrap: wrap">
   <button (click)="takeOneValue()" mat-raised-button color="primary">
     Take n value
@@ -30,5 +30,44 @@
 
   <button (click)="takeUntilTimer()" mat-raised-button color="primary">
     TakeUntil Timer
+  </button>
+  <button (click)="takeWhile()" mat-raised-button color="primary">
+    TakeWhile stream
+  </button>
+  <button (click)="takeWhileVsFilter()" mat-raised-button color="primary">
+    TakeWhile vs Filter
+  </button>
+  <button (click)="takeLastNValues()" mat-raised-button color="primary">
+    Take Last N values
+  </button>
+</div>
+<h2>First, Last, Single</h2>
+<div style="display: flex; width: 100%; flex-wrap: wrap">
+  <button (click)="firstValue()" mat-raised-button color="primary">
+    First value no cond.
+  </button>
+  <button (click)="firstValueWithCond()" mat-raised-button color="primary">
+    First value match Condn.
+  </button>
+  <button (click)="noValueMatchCondn()" mat-raised-button color="primary">
+    No value match Condn.
+  </button>
+  <button (click)="defaultValue()" mat-raised-button color="primary">
+    Default value match Condn.
+  </button>
+</div>
+<h2>Skip Operators</h2>
+<div style="display: flex; width: 100%; flex-wrap: wrap">
+  <button (click)="skipNValues()" mat-raised-button color="primary">
+    Skip N Values
+  </button>
+  <button (click)="skipWhileValues()" mat-raised-button color="primary">
+    SkipWhile Operator
+  </button>
+  <button (click)="skipUntilTimer()" mat-raised-button color="primary">
+    SkipUntil Timer
+  </button>
+  <button (click)="skipLastNValues()" mat-raised-button color="primary">
+    SkipLast N Values
   </button>
 </div>
