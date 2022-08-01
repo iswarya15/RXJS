@@ -10,8 +10,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { TransformComponent } from './transform/transform.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductsService } from './products/products.service';
+import { SubjectComponent } from './subject/subject.component';
 @NgModule({
-  declarations: [AppComponent, TransformComponent, ProductsComponent],
+  declarations: [AppComponent, TransformComponent, ProductsComponent, SubjectComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -272,3 +272,148 @@ The skip operators **skips the values** from the source observable based on a `c
 
 - `Filter` emits the value if the predicate(condn) is true
 - `SkipWhile` skips the value if the predicate(condn) is true
+
+## Subjects
+
+`Subjects` are special Observable which acts as both `Observer` and `Observable`. They allow us to `emit` new values to the `Observable` stream using the `next` method.
+
+- All the `subscribers`, who subscribe to the `subject` will _receive the same instance of the subject & hence the same values_.
+
+* A `Subject` is a special type of `Observable` which allows values to be `multi-casted` to many `observers`.
+
+### How does Subjects work?
+
+`Subject` implements _both_ `subscribe` method and `next`, `error` and `complete`.
+
+### Creating Subject
+
+```
+subject$ = new Subject();
+```
+
+### Subscribing & Emitting: Subject
+
+```
+ngOnInit() {
+  this.subject$.subscribe(val => console.log(value))
+
+  this.subject$.next(1);
+  this.subject$.next(2);
+  this.subject$.complete();
+}
+```
+
+## Subject - Hot Observable
+
+`Observables` are classified into two groups.
+
+- Cold Observable
+- Hot Observable
+
+### Cold Observable
+
+The `cold` observable _*does not activate the producer*_ until there is a `subscriber`. The `producer` emits the value only when a subscriber subscribes to it.
+
+### Hot Observable
+
+The `Hot` observable _does not wait for a `subscriber` to emit the data_. It can start emitting the values right away.
+
+```
+subject$ = new Subject();
+
+ngOnInit() {
+  subject$.next(1);
+  subject$.next(2);
+  subject$.complete();
+}
+```
+
+In the above example, since there were no `subscribers`, no one receives the data but that did not _*stop the subject from emitting data*_.
+
+Now consider the following example. Here the subjects that emits the _values 1 & 2 are lost_ because **subscription happens after they emit values**.
+
+```
+ngOnInit() {
+  subject$.next(1);
+  subject$.next(2);
+
+  subject$.subscribe(val => console.log(val));
+
+  subject$.next(3);
+  subject$.next(4);
+  subject$.complete();
+}
+```
+
+## Every Subject is an Observer
+
+`Observer` needs to implement `next`, `error`, `complete` callback (all optional) to become an `Observer`.
+
+```
+let obs$ = new Observable(observer => {
+  observer.next(1);
+  observer.error('error');
+})
+
+this.subject$.subscribe(val => {
+      console.log(val);
+});
+
+obs$.subscribe(subject$);
+```
+
+Since the `subject$` implements `next` method, it receives the value from `observable` and emits them to `subscribers`. So _we can subscribe to observable and use `subject$` as `observer`_.
+
+## Subjects are MultiCast
+
+Another important distinction between `observable` and `subject` is that `Subjects` are `multi cast`.
+
+- More than _one subscriber can subscribe to a Subject_. They will `share` the **same instance** of the observable. All subscribers will receive the _same event_ when the Subject emits it.
+
+* Multiple `observers` of an `observable` will receive a **separate instance** of the `observable`.
+
+## MultiCast vs UniCast
+
+Check `uniCastVsMultiCast` method in `subject.component.ts`.
+
+## Subject maintains a list of Subscribers
+
+Whenever `subscriber` subscribes to a `Subject`, it will add it to an _array of `Subscribers`_. This way `Subject` keeps track of all the `subscribers` and emits the `event` to all of them.
+
+## Types of Subject
+
+- BehaviorSubject
+- ReplaySubject
+- AsyncSubject
+
+## BehaviorSubject
+
+`BehaviorSubject` requires an `initial value` and _stores the current value and emits it to the new subscribers_.
+
+```
+subject$ = new BehaviorSubject(0);
+
+subject$.subscribe(val => console.log(val)); //0
+
+subject$.next(1);
+```
+
+`BehaviorSubject` will always _remembers the last emitted value_ ans shares it with new `subscribers`.
+
+## ReplaySubject
+
+`ReplaySubject` replays old values to new `Subscribers` when they _first subscribe_.
+
+- The `ReplaySubject` will _store every value it emits in a buffer_. We can configure the `buffer arguments` using the `bufferSize` and `windowTime`.
+
+`bufferSize` : No. of items that `ReplaySubject` will keep in its _buffer_. It _defaults_ to _infinity_.
+
+`windowTime` : The _amount of time_ to keep the value in the buffer.
+
+Even when **subscription happens after the values are emitted**, ReplaySubject stores the values in a buffer.
+
+## AsyncSubject
+
+`AsyncSubject` only emits the _latest value when it completes_. If it errors out, then it will emit an error, but will not emit anymore values.
+
+Check `asyncSubjectDemo` method in `subject.component.ts`

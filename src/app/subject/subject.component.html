@@ -1,0 +1,26 @@
+<h2>SUBJECT</h2>
+<!-- No click event is needed for some elements since we attach the fromEvent Event Listener to this button -->
+
+<div style="display: flex; width: 100%; flex-wrap: wrap">
+  <button (click)="valuesBeforeSubs()" mat-raised-button color="primary">
+    Values lost before subs
+  </button>
+  <button (click)="subjectAsObserver()" mat-raised-button color="primary">
+    Subject is Observer
+  </button>
+  <button (click)="uniCastVsMultiCast()" mat-raised-button color="primary">
+    UniCast vs MultiCast
+  </button>
+  <button (click)="behaviorSubjectInit()" mat-raised-button color="primary">
+    BehaviorSubject
+  </button>
+  <button (click)="replaySubjectDemo()" mat-raised-button color="primary">
+    ReplaySubject Default Buffer
+  </button>
+  <button (click)="replaySubjectBuffer()" mat-raised-button color="primary">
+    ReplaySubject with Buffer
+  </button>
+  <button (click)="asyncSubjectDemo()" mat-raised-button color="primary">
+    AsyncSubject
+  </button>
+</div>
