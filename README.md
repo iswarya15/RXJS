@@ -417,3 +417,19 @@ Even when **subscription happens after the values are emitted**, ReplaySubject s
 `AsyncSubject` only emits the _latest value when it completes_. If it errors out, then it will emit an error, but will not emit anymore values.
 
 Check `asyncSubjectDemo` method in `subject.component.ts`
+
+## Scan & Reduce
+
+The `Scan` & `Reduce` Operators in Angular applies an `accumulator` function on the _values of the source observable_. The `Scan` Operator _returns all intermediate results of the accumulation_, while `Reduce` _only emits the last result_. Both also use an _optional seed value as the initial value_.
+
+## DebounceTime & Debounce
+
+Both _emit values_ from the source observable, **only after a certain amount of time has elapsed since the last value**. Both _emit only the latest value and discard any intermediate values_.
+
+### UseCase of DebounceTime & Debounce
+
+The typeahead/autocomplete `fields` are one of the most common use cases for `Debounce` Operators.
+
+- As the user types in the typeahead field, we need to _listen to it and send an HTTP request_ to the back end to _get a list of possible values_. If we send _*HTTP requests for every keystroke*_, we end up _making numerous calls to the server_.
+
+- By using the `Debounce` Operators, we wait until the _user pauses typing before sending_ an HTTP Request. This will _eliminates unnecessary HTTP requests_.

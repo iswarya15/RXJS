@@ -5,7 +5,9 @@ import {
   ViewChild,
   ElementRef,
 } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
+
 import {
   Observable,
   fromEvent,
@@ -27,6 +29,10 @@ import {
   skipWhile,
   skipUntil,
   skipLast,
+  scan,
+  reduce,
+  debounceTime,
+  debounce,
 } from 'rxjs';
 
 @Component({
@@ -41,9 +47,25 @@ export class TransformComponent implements OnInit, AfterViewInit {
   @ViewChild('clickLocation', { static: true }) clickLocation!: MatButton;
   @ViewChild('firstClick', { static: true }) firstClick!: MatButton;
 
+  myForm = new FormGroup({
+    firstName: new FormControl(),
+    lastName: new FormControl(),
+  });
+  delay: number = 1000;
+
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.myForm.controls.firstName.valueChanges
+      .pipe(debounceTime(1000)) //only emits change after 1s
+      .subscribe((data) => console.log('Form name value changed => ', data));
+
+    this.myForm.controls.lastName.valueChanges
+      .pipe(debounce(() => interval(this.delay))) //debounce takes in Observable which decides the delay
+      .subscribe((value) =>
+        console.log('Form LastName value chanhed => ', value)
+      );
+  }
 
   ngAfterViewInit(): void {
     this.switchMapforClick();
@@ -246,5 +268,22 @@ export class TransformComponent implements OnInit, AfterViewInit {
     const obs$: Observable<number> = range(1, 100).pipe(skipLast(90));
     // SkipLast delays the value. Use tap to check
     obs$.subscribe((val) => console.log('Skip Last N Values => ', val));
+  }
+
+  // When the second value arrives from source observable, the result of previous step becomes acc. The scan then emits a new value which becomes the acc for third input.
+  scanValues() {
+    const obs$: Observable<number> = of(1, 2, 3, 4, 5);
+
+    obs$
+      .pipe(scan((acc, val) => acc * val, 2)) //2 is the initial seed value (acc)
+      .subscribe((val) => console.log('Scanned values => ', val)); //emits intermediatory result at each step
+  }
+
+  reduceValues() {
+    const obs$: Observable<number> = of(1, 2, 3, 4, 5);
+
+    obs$
+      .pipe(reduce((acc, val) => acc + val, 0)) // 0 is the initial seed value(acc)
+      .subscribe((val) => console.log('Reduce Final value => ', val)); //emits only the final value
   }
 }

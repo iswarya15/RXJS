@@ -5,6 +5,8 @@ import {
   Observable,
   ReplaySubject,
   Subject,
+  fromEvent,
+  takeUntil,
 } from 'rxjs';
 
 @Component({
@@ -14,11 +16,17 @@ import {
 })
 export class SubjectComponent implements OnInit {
   subject$ = new Subject();
+  _closed$: Subject<boolean> = new Subject<boolean>();
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    fromEvent(document, 'scroll')
+      .pipe(takeUntil(this._closed$))
+      .subscribe(() => console.log('Mosue Down'));
+  }
 
   valuesBeforeSubs() {
+    this._closed$.next(true);
     this.subject$.next(0); //0 is not received since subscription happens only after they emit values
     console.log('0 is lost since the subject$ is not yet subscribed');
     this.subject$.subscribe((val) =>
